@@ -1,1 +1,9 @@
-Sleep Cient for Zone 2
+# Sleep Cient for Zone 2
+
+
+## zone2 의 기능
+### 1.졸음운전 여부 판단
+  - 심박수 측정 
+  - co2 농도 감지
+  - 눈깜빡임 판단
+
