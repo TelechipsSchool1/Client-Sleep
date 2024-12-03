@@ -9,9 +9,9 @@ from imutils import face_utils
 
 # --- Client Socket Configuration ---
 LOCAL_IP = '0.0.0.0'  # 로컬 IP (0.0.0.0은 모든 인터페이스를 의미)
-LOCAL_PORT = 56789    # 원하는 로컬 포트를 지정
+LOCAL_PORT = 8080    # 원하는 로컬 포트를 지정
 
-SERVER_IP = '127.0.0.1'  # 서버 IP 주소
+SERVER_IP = '192.168.137.1'  # 서버 IP 주소 #실제 서버 주소는 '192.168.137.6'
 SERVER_PORT = 12345          # 서버 포트 번호
 
 # --- CO2 Sensor Configuration ---
@@ -155,7 +155,7 @@ while True:
                 status = 0
                 color = (0, 255, 0)
         
-        cv2.putText(frame, str(status), (100, 100), cv2.FONT_HERSHEY_SIMPLEX, 1.2, color, 3)
+       # cv2.putText(frame, str(status), (100, 100), cv2.FONT_HERSHEY_SIMPLEX, 1.2, color, 3)
 
     # CO₂ 데이터 읽기
     co2_concentration = read_co2_from_sensor()
@@ -189,8 +189,9 @@ while True:
     # 패킷 전송
     data_packet = struct.pack(packet_format, zone_id, co2, heart, sleep_score)
     client_socket.sendall(data_packet)
+    time.sleep(1)
 
-    cv2.imshow("Result", frame)
+    #cv2.imshow("Result", frame)
     key = cv2.waitKey(1)
     if key == 27:  # Esc 키로 종료
         break
