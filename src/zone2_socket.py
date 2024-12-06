@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/root/clent_sleep_ver2')  # 모듈 경로 추가
+sys.path.append('/root/Client-Sleep')  # 모듈 경로 추가
 
 import socket
 import struct
@@ -29,21 +29,28 @@ status = 0
 # 메인 루프
 while True:
 
-    # 졸음 status , CO₂ 데이터 읽기
+    # CO₂ 데이터 읽기
     try:
-        with open("zone2.txt","r") as zone2_file:
-            lines = zone2_file.readlines()
-            if len(lines) >= 2:
+        with open("co2.txt","r") as co2_file:
+            lines = co2_file.readlines()
+            if len(lines) >= 1:
                 co2 = float(lines[0].strip())
-                status = float(lines[1].strip())
-            else:
-                co2 = 0
-                status = 0
     except Exception as e:
         print(f"Error reading zone2 value: {e}")
         co2 = 0
-        status = 0
 
+    print(f"co2 : {co2:.2f}")
+    # 졸음 status 데이터 읽기
+    try:
+        with open("status.txt","r") as status_file:
+            lines = status_file.readlines()
+            if len(lines) >= 2:
+                status = int(lines[0].strip())
+            else:
+                status = 0
+    except Exception as e:
+        print(f"Error reading zone2 value: {e}")
+        status = 0
 
     # heart.txt 읽기
     try:
@@ -64,6 +71,8 @@ while True:
     sleep_score += frame_score
     sleep_score = max(sleep_score, envir_score)
 
+    print(co2)
+    print(heart)
     # 총 점수 255 이상 : 졸음 경보
     # 총 점수 510 이상 : 졸음 위험
     # 패킷 전송

@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/root/clent_sleep_ver2')  # 모듈 경로 추가
+sys.path.append('/root/Client-Sleep')  # 모듈 경로 추가
 
 import time
 from collections import deque

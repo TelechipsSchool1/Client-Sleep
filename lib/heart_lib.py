@@ -1,9 +1,6 @@
-import smbus
-import time
 import numpy as np
 from scipy.signal import find_peaks
 from collections import deque
-import fcntl
 from lib.param import *
 
 # Initialize the MAX30102 sensor
