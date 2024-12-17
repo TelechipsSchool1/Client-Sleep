@@ -2,10 +2,10 @@
 ZONE_ID = 2
 
 # Client Socket Configuration
-LOCAL_IP = '0.0.0.0'  # 로컬 IP
-LOCAL_PORT = 8080    # 로컬 포트
-SERVER_IP = '192.168.137.1'  # 서버 IP 주소
-SERVER_PORT = 12345          # 서버 포트 번호
+LOCAL_IP = '0.0.0.0'  # local IP
+LOCAL_PORT = 8080    # local port
+SERVER_IP = '192.168.137.1'  # server IP address
+SERVER_PORT = 12345          # server port number
 
 # CO2 Sensor Configuration
 UART_PORT = "/dev/ttyAMA2"

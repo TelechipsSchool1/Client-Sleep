@@ -1,19 +1,19 @@
 import sys
-sys.path.append('/root/Client-Sleep')  # 모듈 경로 추가
+sys.path.append('/root/Client-Sleep')  # Module Path
 
 import socket
 import struct
 import time
 from lib.param import *
 
-# 초기 변수 설정
+# Set init value
 zone_id = ZONE_ID
 co2 = 0.0
 heart = 0.0
-sleep_score = 100
+sleep_score = 0
 
 packet_format = 'i f f i'
-# 소켓 초기화
+# Initialize Socket
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try:
@@ -26,10 +26,10 @@ except Exception as e:
 
 status = 0
 
-# 메인 루프
+# main loop
 while True:
 
-    # CO₂ 데이터 읽기
+    # Read CO₂ data
     try:
         with open("co2.txt","r") as co2_file:
             lines = co2_file.readlines()
@@ -40,7 +40,8 @@ while True:
         co2 = 0
 
     print(f"co2 : {co2:.2f}")
-    # 졸음 status 데이터 읽기
+    
+    # Read sleep status data
     try:
         with open("status.txt","r") as status_file:
             lines = status_file.readlines()
@@ -52,7 +53,7 @@ while True:
         print(f"Error reading zone2 value: {e}")
         status = 0
 
-    # heart.txt 읽기
+    # Read heart data
     try:
         with open("heart.txt", "r") as heart_file:
             lines = heart_file.readlines()
@@ -65,7 +66,7 @@ while True:
         print(f"Error reading heart value: {e}")
         heart = 0.0
 
-    # Sleep score 업데이트
+    # Updata sleep score
     frame_score = SLEEP_UP_SCORE if status else SLEEP_DOWN_SCORE
     envir_score = CO2_THRESHOLD_OVER_SCORE if co2 > CO2_THRESHOLD else CO2_THRESHOLD_UNDER_SCORE
     sleep_score += frame_score
@@ -73,9 +74,8 @@ while True:
 
     print(co2)
     print(heart)
-    # 총 점수 255 이상 : 졸음 경보
-    # 총 점수 510 이상 : 졸음 위험
-    # 패킷 전송
+
+    # Send packet
     data_packet = struct.pack(packet_format, zone_id, co2, heart, sleep_score)
     client_socket.sendall(data_packet)
     time.sleep(1)

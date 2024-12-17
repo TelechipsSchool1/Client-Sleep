@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/root/Client-Sleep')  # 모듈 경로 추가
+sys.path.append('/root/Client-Sleep')  # Module Path
 
 import cv2
 import dlib
@@ -14,14 +14,14 @@ cap = cv2.VideoCapture(1)
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(SHAPE_PREDICTOR)
 
-# 초기 변수 설정
+# Set init value
 sleep = 0
 drowsy = 0
 active = 0
 status = 0
 color = (0, 0, 0)
 
-# 메인 루프
+# main loop
 while True:
     ret, frame = cap.read()
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -39,7 +39,7 @@ while True:
         landmarks = predictor(gray, face)
         landmarks = face_utils.shape_to_np(landmarks)
 
-        # 깜빡임 감지
+        # Detect blink
         left_blink = blinked(landmarks[36], landmarks[37], landmarks[38], 
                              landmarks[41], landmarks[40], landmarks[39])
         right_blink = blinked(landmarks[42], landmarks[43], landmarks[44], 
@@ -67,7 +67,7 @@ while True:
                 status = 0
                 color = (0, 255, 0)
 
-        # 고개 기울기 계산
+        # Calculate head tilt
         rotation_vector, _ = calculate_head_pose(landmarks)
         pitch = np.degrees(rotation_vector[0][0])
         yaw = np.degrees(rotation_vector[1][0])
@@ -77,7 +77,7 @@ while True:
         # cv2.putText(frame, f"Yaw: {yaw:.2f}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
         # cv2.putText(frame, f"Roll: {roll:.2f}", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
 
-        if pitch > 20:  # 고개가 떨어짐
+        if pitch > 20:  # Down head tilt
             cv2.putText(frame, "Head Down Detected!", (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
 
         #cv2.putText(frame, status, (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 1.2, color, 3)
@@ -86,7 +86,7 @@ while True:
             (x, y) = landmarks[n]
             cv2.circle(face_frame, (x, y), 1, (255, 255, 255), -1)
 
-    # sleep status 데이터 저장
+    # Save sleep status
     try:
         with open("status.txt","w") as status_file:
             fcntl.flock(status_file, fcntl.LOCK_EX)
@@ -95,13 +95,12 @@ while True:
     except Exception as e:
         print(f"Error writing to status.txt: {e}")
     
-   # print(status)
     #cv2.imshow("Result", frame)
     time.sleep(0.1)
 
-    # 종료 조건
+    # End Condition
     key = cv2.waitKey(1)
-    if key == 27: # ESC 키로 종료
+    if key == 27: # Exit with the ESC key
         break
 
 cap.release()
