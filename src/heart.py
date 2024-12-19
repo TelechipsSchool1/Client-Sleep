@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/root/Client-Sleep')  # 모듈 경로 추가
+sys.path.append('/root/Client-Sleep')  # Module Path
 
 import time
 from collections import deque
@@ -15,7 +15,9 @@ def main():
 
     red_data = []
     start_time = time.time()
-    recent_bpm_values = deque(maxlen=10)  # 최근 10개 데이터를 저장하는 큐
+
+    # Queue to store the last 10 data
+    recent_bpm_values = deque(maxlen=10)
 
     try:
         while True:

@@ -1,7 +1,7 @@
 import serial
 from lib.param import *
 
-# 요청 패킷 생성
+# Generate request packets
 def generate_request_packet():
     start_bytes = [0x42, 0x4D]
     command = [0xE3]
@@ -10,7 +10,7 @@ def generate_request_packet():
     chksum_low = [0x72]
     return bytes(start_bytes + command + parameters + chksum_high + chksum_low)
 
-# 응답 데이터 처리
+# Processing response datai
 def process_response(response):
     if len(response) != 12:
         print("Invalid response length.")
@@ -28,7 +28,7 @@ def process_response(response):
 
     return (co2_high * 256) + co2_low
 
-# CO2 농도 읽기
+# Read CO2 concentration
 def read_co2_from_sensor():
     request_packet = generate_request_packet()
     try:

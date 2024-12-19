@@ -1,20 +1,20 @@
 import sys
-sys.path.append('/root/Client-Sleep')  # 모듈 경로 추가
+sys.path.append('/root/Client-Sleep')  # Module path
 
 import fcntl
 import time
 from lib.co2_lib import read_co2_from_sensor
 
-# 초기 변수 설정
+# Set CO₂ init value
 co2 = 0.0
 
-# 메인 루프
+# main loop
 while True:
-    # CO₂ 데이터 읽기
+    # Read CO₂ data
     co2_concentration = read_co2_from_sensor()
     co2 = co2_concentration if co2_concentration is not None else 0.0
 
-    # CO₂ 데이터 저장
+    # Save CO₂ data
     try:
         with open("co2.txt","w") as co2_file:
             fcntl.flock(co2_file, fcntl.LOCK_EX)
@@ -23,5 +23,4 @@ while True:
     except Exception as e:
         print(f"Error writing to co2.txt: {e}")
 
-    #print(co2)
     time.sleep(0.1)
