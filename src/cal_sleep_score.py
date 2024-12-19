@@ -1,30 +1,16 @@
 import sys
 sys.path.append('/root/Client-Sleep')  # Module Path
 
-import socket
 import struct
 import time
+import fcntl
 from lib.param import *
 
 # Set init value
-zone_id = ZONE_ID
 co2 = 0.0
 heart = 0.0
 sleep_score = 0
 status = 0
-
-packet_format = 'i f f i'
-
-# Initialize Socket
-client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-try:
-    client_socket.bind((LOCAL_IP, LOCAL_PORT))
-    client_socket.connect((SERVER_IP, SERVER_PORT))
-    print(f"Connected to server at {SERVER_IP} : {SERVER_PORT} from local port {LOCAL_PORT}")
-except Exception as e:
-    print(f"Error: {e}")
-    client_socket.close()
 
 # main loop
 while True:
@@ -36,9 +22,11 @@ while True:
             if len(lines) >= 1:
                 co2 = float(lines[0].strip())
     except Exception as e:
-        print(f"Error reading zone2 value: {e}")
+        print(f"Error reading co2 value: {e}")
         co2 = 0
 
+    print(f"co2 : {co2:.2f}")
+    
     # Read sleep status data
     try:
         with open("status.txt","r") as status_file:
@@ -48,7 +36,7 @@ while True:
             else:
                 status = 0
     except Exception as e:
-        print(f"Error reading zone2 value: {e}")
+        print(f"Error reading status value: {e}")
         status = 0
 
     # Read heart data
@@ -63,27 +51,25 @@ while True:
     except Exception as e:
         print(f"Error reading heart value: {e}")
         heart = 0.0
-    
-    # Read score data
+
+    # Updata sleep score
+    frame_score = SLEEP_UP_SCORE if status else SLEEP_DOWN_SCORE
+    envir_score = CO2_THRESHOLD_OVER_SCORE if co2 > CO2_THRESHOLD else CO2_THRESHOLD_UNDER_SCORE
+    sleep_score += frame_score
+    sleep_score = max(sleep_score, envir_score)
+    sleep_score = min(MAX_SLEEP_SCORE,sleep_score)
+
+    #print(f"heart : {heart:.2f}")
+    #print(f"status : {status:d}")
+    #print(f"score : {sleep_score:d}")
+
     try:
-        with open("score.txt", "r") as score_file:
-            lines = score_file.readlines()
-            if len(lines) >= 1:
-                sleep_score = int(lines[0].strip())
-            else:
-                sleep_score = -1
+        with open("score.txt","w") as score_file:
+            fcntl.flock(score_file, fcntl.LOCK_EX)
+            score_file.write(f"{sleep_score:d}\n")
+            fcntl.flock(score_file, fcntl.LOCK_UN)
     except Exception as e:
-        print(f"Error reading heart value: {e}")
-        sleep_score = -1
+        print(f"Error Writing to score.txt : {e}")
+    
+    time.sleep(0.2)
 
-    print(f"co2 : {co2:.2f}")
-    print(f"heart : {heart:.2f}")
-    print(f"status : {status:d}")
-    print(f"score : {sleep_score:d}")
-
-    # Send packet
-    data_packet = struct.pack(packet_format, zone_id, co2, heart, sleep_score)
-    client_socket.sendall(data_packet)
-    time.sleep(1)
-
-client_socket.close()

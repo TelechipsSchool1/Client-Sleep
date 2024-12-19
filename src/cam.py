@@ -97,7 +97,7 @@ while True:
     
     #cv2.imshow("Result", frame)
     time.sleep(0.1)
-
+    # print(f"status : {status:d}")
     # End Condition
     key = cv2.waitKey(1)
     if key == 27: # Exit with the ESC key

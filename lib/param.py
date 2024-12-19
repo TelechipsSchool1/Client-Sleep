@@ -4,7 +4,7 @@ ZONE_ID = 2
 # Client Socket Configuration
 LOCAL_IP = '0.0.0.0'  # local IP
 LOCAL_PORT = 8080    # local port
-SERVER_IP = '192.168.137.1'  # server IP address
+SERVER_IP = '192.168.137.6'  # server IP address
 SERVER_PORT = 12345          # server port number
 
 # CO2 Sensor Configuration
@@ -18,6 +18,7 @@ CO2_THRESHOLD_UNDER_SCORE = 0
 # Sleep Score
 SLEEP_UP_SCORE = 17
 SLEEP_DOWN_SCORE = -3
+MAX_SLEEP_SCORE = 270
 
 # Eye Blink Detection
 SHAPE_PREDICTOR = "shape_predictor_68_face_landmarks.dat"
